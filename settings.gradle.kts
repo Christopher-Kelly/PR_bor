@@ -1,0 +1,1 @@
+rootProject.name = "pr_bot_full"

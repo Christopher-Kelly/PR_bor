@@ -1,0 +1,4 @@
+    @Value("${app.cors.allowed-origin}")
+    private String allowedOrigin;
+
+    is only for spring boot
