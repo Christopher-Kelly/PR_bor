@@ -21,20 +21,6 @@ public class Main {
             throw new RuntimeException(
                     "Please enter a PR url as a parameter");
         }
-        String PR_Url = argv[0];
-        GitHub gh_handler = new GitHub(PR_Url);
-        String diff = gh_handler.generatePRDiff();
-        System.out.println(diff);
-        String review = Anthropic.sendMessage(diff);
-        System.out.println("logging review: \n" + review);
-        HttpResponse<?> resp = gh_handler.postComment(review);
-
-        if (resp.statusCode() >= 300) {   // note: 201, not 200
-            throw new RuntimeException(
-                    "GitHub comment failed: " + resp.statusCode() + " — " + resp.body());
-        }
-
-
-
+        App.run(argv[0]);
     }
 }

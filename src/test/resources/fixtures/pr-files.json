@@ -1,0 +1,37 @@
+[
+  {
+    "sha": "b1a9f2c4d3e5a6b7c8d9e0f1a2b3c4d5e6f7a8b9",
+    "filename": "src/main/java/org/example/UserRepo.java",
+    "status": "modified",
+    "additions": 3,
+    "deletions": 1,
+    "changes": 4,
+    "blob_url": "https://github.com/owner/repo/blob/feature/src/main/java/org/example/UserRepo.java",
+    "raw_url": "https://github.com/owner/repo/raw/feature/src/main/java/org/example/UserRepo.java",
+    "contents_url": "https://api.github.com/repos/owner/repo/contents/src/main/java/org/example/UserRepo.java",
+    "patch": "@@ -12,7 +12,9 @@ public class UserRepo {\n \n     public User find(String id) {\n-        return db.query(FIND_BY_ID, id);\n+        String sql = \"SELECT * FROM users WHERE id = \" + id;\n+        return db.query(sql);\n     }\n "
+  },
+  {
+    "sha": "c2b8e3d5f4a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0",
+    "filename": "package-lock.json",
+    "status": "modified",
+    "additions": 412,
+    "deletions": 97,
+    "changes": 509,
+    "blob_url": "https://github.com/owner/repo/blob/feature/package-lock.json",
+    "raw_url": "https://github.com/owner/repo/raw/feature/package-lock.json",
+    "contents_url": "https://api.github.com/repos/owner/repo/contents/package-lock.json",
+    "patch": "@@ -1,5 +1,5 @@\n {\n-  \"lockfileVersion\": 2,\n+  \"lockfileVersion\": 3,\n   \"requires\": true,\n "
+  },
+  {
+    "sha": "d3c9f4e6a5b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1",
+    "filename": "docs/architecture.png",
+    "status": "added",
+    "additions": 0,
+    "deletions": 0,
+    "changes": 0,
+    "blob_url": "https://github.com/owner/repo/blob/feature/docs/architecture.png",
+    "raw_url": "https://github.com/owner/repo/raw/feature/docs/architecture.png",
+    "contents_url": "https://api.github.com/repos/owner/repo/contents/docs/architecture.png"
+  }
+]

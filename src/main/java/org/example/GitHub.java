@@ -13,27 +13,49 @@ import java.util.List;
 import java.util.Map;
 
 public class GitHub {
-    String PR_URL;
+    public static final String DEFAULT_API_BASE = "https://api.github.com";
+
     private final String owner, repo;
     private final int pr;
+    private final String apiBase;
 
-    public GitHub(String url) {
-        // https://github.com/OWNER/REPO/pull/NUMBER
-        String path = url.replace("https://github.com/", "");
-        String[] parts = path.split("/");
-        this.owner = parts[0];
-        this.repo  = parts[1];
-        this.pr    = Integer.parseInt(parts[3]);   // [2] is "pull"
+    /** Parses https://github.com/OWNER/REPO/pull/NUMBER and talks to the real API. */
+    public GitHub(String prUrl) {
+        this(prUrl, DEFAULT_API_BASE);
+    }
+
+    public GitHub(String prUrl, String apiBase) {
+        // path is /OWNER/REPO/pull/NUMBER, so split gives ["", owner, repo, "pull", number]
+        String[] parts = URI.create(prUrl).getPath().split("/");
+        if (parts.length < 5 || !"pull".equals(parts[3])) {
+            throw new IllegalArgumentException("Not a pull request url: " + prUrl);
+        }
+        this.owner = parts[1];
+        this.repo  = parts[2];
+        this.pr    = Integer.parseInt(parts[4]);
+        this.apiBase = trimTrailingSlash(apiBase);
+    }
+
+    /** Used when owner/repo/pr are already known — and by tests, to aim at a fake server. */
+    public GitHub(String owner, String repo, int pr, String apiBase) {
+        this.owner = owner;
+        this.repo = repo;
+        this.pr = pr;
+        this.apiBase = trimTrailingSlash(apiBase);
+    }
+
+    private static String trimTrailingSlash(String base) {
+        return base.endsWith("/") ? base.substring(0, base.length() - 1) : base;
     }
 
     private String filesUrl() {
-        return "https://api.github.com/repos/%s/%s/pulls/%d/files"
-                .formatted(owner, repo, pr);
+        return "%s/repos/%s/%s/pulls/%d/files"
+                .formatted(apiBase, owner, repo, pr);
     }
 
     private String commentUrl() {
-        return "https://api.github.com/repos/%s/%s/issues/%d/comments"
-                .formatted(owner, repo, pr);
+        return "%s/repos/%s/%s/issues/%d/comments"
+                .formatted(apiBase, owner, repo, pr);
     }
     public String generatePRDiff() throws URISyntaxException, IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();

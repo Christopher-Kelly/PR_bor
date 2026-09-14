@@ -54,9 +54,17 @@ class Anthropic {
             "\n" +
             "Then, only if useful, a two-line summary of the most important thing to address.";
     public static String sendMessage(String diffs) {
-        AnthropicClient client = AnthropicOkHttpClient.builder()
-                .apiKey(Config.get("anthropic_api_key"))
-                .build();
+        return sendMessage(diffs, null);
+    }
+
+    /** @param baseUrl overrides the API host; null uses the real one. Tests pass a fake server. */
+    static String sendMessage(String diffs, String baseUrl) {
+        AnthropicOkHttpClient.Builder builder = AnthropicOkHttpClient.builder()
+                .apiKey(Config.get("anthropic_api_key"));
+        if (baseUrl != null) {
+            builder.baseUrl(baseUrl);
+        }
+        AnthropicClient client = builder.build();
 
         MessageCreateParams params = MessageCreateParams.builder()
                 .maxTokens(2048L)              // 1024 is tight for a multi-file review
