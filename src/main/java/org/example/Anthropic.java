@@ -77,7 +77,7 @@ class Anthropic {
 
         // content is a list of blocks; pull the text out of each and join
         String review = message.content().stream()
-                .flatMap(block -> block.text().stream())   // Optional<TextBlock> -> stream
+                .flatMap(block -> block.text().stream())
                 .map(TextBlock::text)
                 .collect(Collectors.joining("\n"));
 

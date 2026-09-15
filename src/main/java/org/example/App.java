@@ -34,7 +34,7 @@ public class App {
         System.out.println("logging review: \n" + review);
 
         HttpResponse<?> resp = gh.postComment(review);
-        if (resp.statusCode() >= 300) {   // note: 201, not 200
+        if (resp.statusCode() >= 300) {
             throw new RuntimeException(
                     "GitHub comment failed: " + resp.statusCode() + " — " + resp.body());
         }
