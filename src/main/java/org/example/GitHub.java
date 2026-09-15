@@ -13,16 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class GitHub {
-    public static final String DEFAULT_API_BASE = "https://api.github.com";
-
     private final String owner, repo;
     private final int pr;
     private final String apiBase;
-
-    /** Parses https://github.com/OWNER/REPO/pull/NUMBER and talks to the real API. */
-    public GitHub(String prUrl) {
-        this(prUrl, DEFAULT_API_BASE);
-    }
 
     public GitHub(String prUrl, String apiBase) {
         // path is /OWNER/REPO/pull/NUMBER, so split gives ["", owner, repo, "pull", number]

@@ -67,15 +67,14 @@ class Anthropic {
         AnthropicClient client = builder.build();
 
         MessageCreateParams params = MessageCreateParams.builder()
-                .maxTokens(2048L)              // 1024 is tight for a multi-file review
+                .maxTokens(2048L)
                 .system(prompt)               // role + rules
-                .addUserMessage(diffs)        // the actual diff — the missing piece
+                .addUserMessage(diffs)
                 .model(Model.CLAUDE_OPUS_5)
                 .build();
 
         Message message = client.messages().create(params);
 
-        // content is a list of blocks; pull the text out of each and join
         String review = message.content().stream()
                 .flatMap(block -> block.text().stream())
                 .map(TextBlock::text)

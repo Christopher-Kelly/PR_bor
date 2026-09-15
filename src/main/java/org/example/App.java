@@ -10,13 +10,6 @@ import java.net.http.HttpResponse;
  * against fake GitHub/Anthropic servers.
  */
 public class App {
-
-    /** Reviews a PR from its web url, against the real GitHub and Anthropic APIs. */
-    public static void run(String prUrl)
-            throws IOException, URISyntaxException, InterruptedException {
-        run(new GitHub(prUrl), null);
-    }
-
     /** Same pipeline, but with both API hosts injected — this is what the tests drive. */
     public static void run(String githubApiBase, String anthropicBase,
                            String owner, String repo, int pr)
@@ -24,7 +17,7 @@ public class App {
         run(new GitHub(owner, repo, pr, githubApiBase), anthropicBase);
     }
 
-    private static void run(GitHub gh, String anthropicBase)
+    static void run(GitHub gh, String anthropicBase)
             throws IOException, URISyntaxException, InterruptedException {
 
         String diff = gh.generatePRDiff();
