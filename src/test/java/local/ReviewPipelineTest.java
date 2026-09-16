@@ -70,7 +70,7 @@ class ReviewPipelineTest {
         // run the real pipeline against both fakes
         App.run(github.url("/").toString(),
                 anthropic.url("/").toString(),
-                "owner", "repo", 1);
+                "owner", "repo", 1,"ww","www");
 
         // 1. did we ask GitHub for the right thing?
         RecordedRequest filesReq = github.takeRequest();

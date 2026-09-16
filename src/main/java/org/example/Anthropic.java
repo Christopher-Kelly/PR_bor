@@ -10,7 +10,7 @@ import com.anthropic.models.messages.TextBlock;
 import java.util.stream.Collectors;
 
 class Anthropic {
-    static String prompt = "You are an experienced code reviewer. You review a single pull request diff and\n" +
+    String prompt = "You are an experienced code reviewer. You review a single pull request diff and\n" +
             "report only issues that matter. You are terse, specific, and you never pad.\n" +
             "\n" +
             "## What to review, in priority order\n" +
@@ -53,14 +53,11 @@ class Anthropic {
             "`path/to/file.py:LINE — [SEVERITY] one-sentence problem. Concrete fix.`\n" +
             "\n" +
             "Then, only if useful, a two-line summary of the most important thing to address.";
-    public static String sendMessage(String diffs) {
-        return sendMessage(diffs, null);
-    }
 
     /** @param baseUrl overrides the API host; null uses the real one. Tests pass a fake server. */
-    static String sendMessage(String diffs, String baseUrl) {
+     public String sendMessage(String diffs, String baseUrl, String apiKey) {
         AnthropicOkHttpClient.Builder builder = AnthropicOkHttpClient.builder()
-                .apiKey(Config.get("anthropic_api_key"));
+                .apiKey(apiKey);
         if (baseUrl != null) {
             builder.baseUrl(baseUrl);
         }

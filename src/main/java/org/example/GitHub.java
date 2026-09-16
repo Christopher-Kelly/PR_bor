@@ -2,6 +2,7 @@ package org.example;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,8 +17,9 @@ public class GitHub {
     private final String owner, repo;
     private final int pr;
     private final String apiBase;
+    private final String apiAuthKey;
 
-    public GitHub(String prUrl, String apiBase) {
+    public GitHub(String prUrl, String apiBase, String apiAuthKey) {
         // path is /OWNER/REPO/pull/NUMBER, so split gives ["", owner, repo, "pull", number]
         String[] parts = URI.create(prUrl).getPath().split("/");
         if (parts.length < 5 || !"pull".equals(parts[3])) {
@@ -27,14 +29,17 @@ public class GitHub {
         this.repo  = parts[2];
         this.pr    = Integer.parseInt(parts[4]);
         this.apiBase = trimTrailingSlash(apiBase);
+        this.apiAuthKey = apiAuthKey;
+
     }
 
     /** Used when owner/repo/pr are already known — and by tests, to aim at a fake server. */
-    public GitHub(String owner, String repo, int pr, String apiBase) {
+    public GitHub(String owner, String repo, int pr, String apiBase, String apiAuthKey) {
         this.owner = owner;
         this.repo = repo;
         this.pr = pr;
         this.apiBase = trimTrailingSlash(apiBase);
+        this.apiAuthKey = apiAuthKey;
     }
 
     private static String trimTrailingSlash(String base) {
@@ -50,12 +55,12 @@ public class GitHub {
         return "%s/repos/%s/%s/issues/%d/comments"
                 .formatted(apiBase, owner, repo, pr);
     }
-    public String generatePRDiff() throws URISyntaxException, IOException, InterruptedException {
+    private HttpResponse<String> sendGithubRequest(String url) throws URISyntaxException, IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
 
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(filesUrl()))
-                .header("Authorization", "Bearer " + Config.get("oauth"))
+                .uri(new URI(url))
+                .header("Authorization", "Bearer " +  this.apiAuthKey )
                 .header("Accept", "application/vnd.github+json")
                 .header("X-GitHub-Api-Version", "2022-11-28")
                 .GET()
@@ -63,8 +68,10 @@ public class GitHub {
 
         System.out.print("sending http request" + request);
 
-        HttpResponse<String> response =
-                client.send(request, HttpResponse.BodyHandlers.ofString());
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+    public String generatePRDiff() throws URISyntaxException, IOException, InterruptedException {
+        HttpResponse<String> response =  sendGithubRequest(filesUrl());
 
         System.out.println("response " + response);
 
@@ -101,7 +108,7 @@ public class GitHub {
                     .uri(URI.create(
                             commentUrl()
                     ))
-                    .header("Authorization", "Bearer " +Config.get("oauth"))
+                    .header("Authorization", "Bearer " + this.apiAuthKey)
                     .header("Accept", "application/vnd.github+json")
                     .header("X-GitHub-Api-Version", "2022-11-28")
                     .header("Content-Type", "application/json")

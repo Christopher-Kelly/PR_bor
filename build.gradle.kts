@@ -17,7 +17,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.11.4"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.springframework.boot:spring-boot-starter-web")
-
+    implementation("com.google.cloud:google-cloud-pubsub:1.135.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
 
 }

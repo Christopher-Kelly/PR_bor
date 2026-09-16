@@ -13,6 +13,6 @@ public class Main {
                     "Please enter a PR url as a parameter");
         }
         String DEFAULT_API_BASE = "https://api.github.com";
-        App.run(new GitHub(argv[0], DEFAULT_API_BASE), null);
+        App.run(new GitHub(argv[0], DEFAULT_API_BASE, 1,"de","ef"),"hi","bye");
     }
 }
